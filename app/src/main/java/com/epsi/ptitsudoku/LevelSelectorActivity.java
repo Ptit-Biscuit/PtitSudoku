@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 public class LevelSelectorActivity extends Activity {
-	private Intent levelSelected = new Intent();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

@@ -45,7 +45,7 @@ public class GridViewAdapter extends ArrayAdapter<GridItem> {
 		int percentDone = getItem(position).getPercentDone();
 
 		viewHolder.levelHolder.setText("Level " + getItem(position).getLevelDifficulty());
-		viewHolder.numHolder.setText("GridItem n°" + getItem(position).getNum());
+		viewHolder.numHolder.setText("Grid n°" + getItem(position).getNum());
 		viewHolder.percentDoneHolder.setText(percentDone + "%");
 		if (percentDone < 50)
 			color = Color.RED;

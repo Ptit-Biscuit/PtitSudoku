@@ -58,12 +58,9 @@ public class GridSelectorActivity extends Activity {
 				(parent, view, position, id) -> {
 					GridItem gridItem = gridItems.get(position);
 
-					Toast.makeText(GridSelectorActivity.this,
-							"GridItem n°" + gridItem.getNum() + " -- " + gridItem.getPercentDone() + "%",
-							Toast.LENGTH_SHORT).show();
-
 					startActivity(
 							new Intent(GridSelectorActivity.this, GridActivity.class)
+									.putExtra("grid", gridItem)
 									.putExtra("gridLines", gridsFromFile.get(new Random().nextInt(gridsFromFile.size()))));
 				}
 		);

@@ -2,10 +2,11 @@ package com.epsi.ptitsudoku;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import com.epsi.ptitsudoku.model.Grid;
 import com.epsi.ptitsudoku.model.GridCanvas;
-
-import java.util.Arrays;
+import com.epsi.ptitsudoku.model.GridItem;
 
 public class GridActivity extends Activity {
 	@Override
@@ -13,17 +14,22 @@ public class GridActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_grid);
 
+		GridItem gridItem = getIntent().getParcelableExtra("grid");
+		Toast.makeText(GridActivity.this,
+				"GridItem n°" + gridItem.getNum() + " -- " + gridItem.getPercentDone() + "%",
+				Toast.LENGTH_SHORT).show();
+
 		String gridLines = getIntent().getStringExtra("gridLines");
 		String[][] grid = createGrid(gridLines);
 
-		((GridCanvas) findViewById(R.id.canvas)).setGrid(grid);
+		((GridCanvas) findViewById(R.id.canvas)).setGrid(new Grid(grid));
 		((GridCanvas) findViewById(R.id.canvas)).invalidate();
 	}
 
 	public String[][] createGrid(String gridLines) {
 		String[][] grid = new String[9][9];
 
-		for (int i = 0; i < 81; i += 9){
+		for (int i = 0; i < 81; i += 9) {
 			String[] row = new String[9];
 			int index = 0;
 

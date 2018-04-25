@@ -8,22 +8,33 @@ import android.view.View;
 
 import com.epsi.ptitsudoku.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GridCanvas extends View {
+
+	private Context context;
+
+	private Grid grid = new Grid(new String[][]{});
+
+	private List<Number> numbers = new ArrayList<>();
 
 	private final int width = 98;
 	private final int height = 98;
 
-	private String[][] grid = new String[][]{};
-
 	public GridCanvas(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.context = context;
+
+		for (int i = 1; i < 10; i++)
+			numbers.add(new Number(String.valueOf(i)));
 	}
 
-	public String[][] getGrid() {
+	public Grid getGrid() {
 		return grid;
 	}
 
-	public void setGrid(String[][] grid) {
+	public void setGrid(Grid grid) {
 		this.grid = grid;
 	}
 
@@ -74,24 +85,20 @@ public class GridCanvas extends View {
 			}
 		}
 
-		// draw grid numbers
-		Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
-		foreground.setColor(getResources().getColor(R.color.textColor));
-		foreground.setStyle(Paint.Style.FILL);
-		foreground.setTextSize(height * 0.75f);
-		foreground.setTextScaleX(width / height);
-		foreground.setTextAlign(Paint.Align.CENTER);
+		// draw grid
+		this.grid.draw(this.context, canvas, width, height, offsetX, offsetY);
 
-		Paint.FontMetrics fm = foreground.getFontMetrics();
-		float x = width / 2;
-		float y = height / 2 - (fm.ascent + fm.descent) / 2;
+		// draw numbers
+		int x = getWidth() / 6;
+		int y = getHeight() - 350;
+		int radius = 60;
 
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				String number = "0".equals(this.grid[i][j]) ? "" : this.grid[i][j];
+		for (int i = 0; i < 5; i++) {
+			numbers.get(i).draw(this.context, canvas, x * (i + 1), y);
+		}
 
-				canvas.drawText(number, offsetX + i * width + x, offsetY + j * height + y, foreground);
-			}
+		for (int i = 5; i < 9; i++) {
+			numbers.get(i).draw(this.context, canvas, x * (i - 4), y + 225);
 		}
 	}
 }
