@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PtitSudoku</string>
+    <string name="playButton">Play</string>
+    <string name="quitButton">Quit</string>
+    <string name="levelOne">Level 1</string>
+    <string name="levelTwo">Level 2</string>
+    <string name="levelThree">Level 3</string>
+</resources>
