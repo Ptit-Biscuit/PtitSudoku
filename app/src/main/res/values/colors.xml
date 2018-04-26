@@ -4,4 +4,5 @@
     <color name="textColor">#ffffffff</color>
     <color name="mainLines">#000000</color>
     <color name="subLines">#cccccc</color>
+    <color name="numberBackground">#ff0033cc</color>
 </resources>

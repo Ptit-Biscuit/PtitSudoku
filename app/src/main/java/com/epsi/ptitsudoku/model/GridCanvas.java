@@ -3,7 +3,9 @@ package com.epsi.ptitsudoku.model;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.epsi.ptitsudoku.R;
@@ -19,8 +21,13 @@ public class GridCanvas extends View {
 
 	private List<Number> numbers = new ArrayList<>();
 
-	private final int width = 98;
-	private final int height = 98;
+	private Number numberSelected;
+
+	private int width = 98;
+
+	private int height = 98;
+
+	private boolean isMoved = false;
 
 	public GridCanvas(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -63,7 +70,6 @@ public class GridCanvas extends View {
 			float startY = offsetY + i * height;
 
 			if (i % 3 != 0) {
-				// sub lines
 				canvas.drawLine(offsetX, startY, stopX, startY, light);
 				canvas.drawLine(startX, offsetY, startX, stopY, light);
 			}
@@ -79,7 +85,6 @@ public class GridCanvas extends View {
 			float startY = offsetY + i * height;
 
 			if (i % 3 == 0) {
-				// main lines
 				canvas.drawLine(offsetX, startY, stopX, startY, dark);
 				canvas.drawLine(startX, offsetY, startX, stopY, dark);
 			}
@@ -89,16 +94,71 @@ public class GridCanvas extends View {
 		this.grid.draw(this.context, canvas, width, height, offsetX, offsetY);
 
 		// draw numbers
-		int x = getWidth() / 6;
-		int y = getHeight() - 350;
-		int radius = 60;
+		int x = getWidth() / 10;
+		int y = getHeight() - 250;
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 9; i++) {
 			numbers.get(i).draw(this.context, canvas, x * (i + 1), y);
 		}
 
-		for (int i = 5; i < 9; i++) {
-			numbers.get(i).draw(this.context, canvas, x * (i - 4), y + 225);
+		if (this.numberSelected != null)
+			numberSelected.draw(this.context, canvas, this.numberSelected.getPosition().x, this.numberSelected.getPosition().y);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		int x = (int) event.getX();
+		int y = (int) event.getY();
+
+		switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				for (Number num : numbers) {
+					int radius = num.getRadius();
+					int startX = num.getPosition().x - radius;
+					int stopX = num.getPosition().x + radius;
+					int startY = num.getPosition().y - radius;
+					int stopY = num.getPosition().y + radius;
+
+					if (y >= startY && y <= stopY) {
+						if (x >= startX && x <= stopX) {
+							this.numberSelected = new Number(num.getValue());
+						}
+					}
+				}
+
+				break;
+			case MotionEvent.ACTION_MOVE:
+				if (this.numberSelected != null) {
+					this.numberSelected.setPosition(new Point(x + 50, y - 50));
+
+					this.isMoved = true;
+
+					this.invalidate();
+				}
+				break;
+			case MotionEvent.ACTION_UP:
+				if (this.isMoved) {
+					// Offsets
+					int offsetX = (getWidth() - width * 9) / 2;
+					int offsetY = (getHeight() - height * 9) / 4;
+
+					if (y >= offsetY && y <= offsetY + width * 9) {
+						if (x >= offsetX && x <= offsetX + width * 9) {
+							int gridX = x / offsetX;
+							int gridY = y / offsetY;
+
+							System.out.println(gridX + " " + gridY);
+						}
+					}
+
+					this.numberSelected = null;
+					this.isMoved = false;
+					this.invalidate();
+				}
+
+				break;
 		}
+
+		return true;
 	}
 }
