@@ -3,11 +3,17 @@ package com.epsi.ptitsudoku.model;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 
 import com.epsi.ptitsudoku.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Grid {
 	private String[][] grid;
+
+	private List<Point> validCells = new ArrayList<>();
 
 	public Grid(String[][] grid) {
 		this.grid = grid;
@@ -27,11 +33,21 @@ public class Grid {
 
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
-				String number = "0".equals(this.grid[i][j]) ? "" : this.grid[i][j];
-
-				canvas.drawText(number, offsetX + i * width + x, offsetY + j * height + y, foreground);
+				if ("0".equals(this.grid[i][j])) {
+					validCells.add(new Point(i, j));
+				} else {
+					canvas.drawText(this.grid[i][j], offsetX + i * width + x, offsetY + j * height + y, foreground);
+				}
 			}
 		}
+	}
+
+	public boolean validMove(int gridX, int gridY) {
+		return validCells.contains(new Point(gridX, gridY));
+	}
+
+	public void replaceCell(int gridX, int gridY, String value) {
+		this.grid[gridX][gridY] = value;
 	}
 
 	public String[][] getGrid() {

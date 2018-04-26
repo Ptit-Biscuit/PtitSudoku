@@ -101,8 +101,10 @@ public class GridCanvas extends View {
 			numbers.get(i).draw(this.context, canvas, x * (i + 1), y);
 		}
 
-		if (this.numberSelected != null)
-			numberSelected.draw(this.context, canvas, this.numberSelected.getPosition().x, this.numberSelected.getPosition().y);
+		if (this.numberSelected != null) {
+			Point position = this.numberSelected.getPosition();
+			numberSelected.draw(this.context, canvas, position.x, position.y);
+		}
 	}
 
 	@Override
@@ -113,11 +115,13 @@ public class GridCanvas extends View {
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				for (Number num : numbers) {
+					Point position = num.getPosition();
 					int radius = num.getRadius();
-					int startX = num.getPosition().x - radius;
-					int stopX = num.getPosition().x + radius;
-					int startY = num.getPosition().y - radius;
-					int stopY = num.getPosition().y + radius;
+
+					int startX = position.x - radius;
+					int stopX = position.x + radius;
+					int startY = position.y - radius;
+					int stopY = position.y + radius;
 
 					if (y >= startY && y <= stopY) {
 						if (x >= startX && x <= stopX) {
@@ -135,6 +139,7 @@ public class GridCanvas extends View {
 
 					this.invalidate();
 				}
+
 				break;
 			case MotionEvent.ACTION_UP:
 				if (this.isMoved) {
@@ -144,10 +149,12 @@ public class GridCanvas extends View {
 
 					if (y >= offsetY && y <= offsetY + width * 9) {
 						if (x >= offsetX && x <= offsetX + width * 9) {
-							int gridX = x / offsetX;
-							int gridY = y / offsetY;
+							int gridX = (x - offsetX) / width;
+							int gridY = (y - offsetY) / height;
 
-							System.out.println(gridX + " " + gridY);
+							if (this.grid.validMove(gridX, gridY)) {
+								this.grid.replaceCell(gridX, gridY, this.numberSelected.getValue());
+							}
 						}
 					}
 
